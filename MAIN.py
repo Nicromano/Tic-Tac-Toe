@@ -9,9 +9,8 @@ from tkinter import ttk
 from PIL import ImageTk,Image
 from tkinter import messagebox
 from tkinter.font import Font
-
-
-
+from logic import TicTacToe
+from functools import partial
 
 class MainWindow(tk.Frame):
     def __init__(self, parent, *args,**kwargs):
@@ -20,6 +19,7 @@ class MainWindow(tk.Frame):
         self.parent.title("TIC TAC TOE")
         self.width = 400
         self.height = 300
+        self.tablero = TicTacToe() #variable para tablero
         self.parent.config(cursor='arrow')
         self.x_cordinate = int((self.parent.winfo_screenwidth()/2) - (self.width/2))
         self.y_cordinate = int((self.parent.winfo_screenheight()/2) - (self.height/2))
@@ -27,13 +27,22 @@ class MainWindow(tk.Frame):
         self.parent.resizable(False, False)
         self.parent.configure(background='beige')
         
-        self.CreateLabel(self.parent, "TIC TAC TOE", 50, 200, Font(family="Helvetica",size=15,weight="bold"), 'beige')
-        self.CreateImage(self.parent, 'tic_128.png', 50, 75, 125, 125)
-        self.nameJugador = tk.Entry(self.parent, justify=tk.CENTER, width=30)
-        self.CreateButton(self.parent, 'SALIR', 200, 175, 16, 1, 'BLUE', 'WHITE', self.salirJuego)
-        self.CreateButton(self.parent, 'JUGAR', 200, 125, 16, 1, 'GREEN', 'WHITE',  self.empiezaJuego)
-        self.CreateLabel(self.parent, 'Ingresa nombre del jugador', 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
+        self.FrameCentral = tk.Frame(master=self.parent,
+                    width=self.width,
+                    height=self.height,
+                    bg='beige')
+        self.FrameCentral.grid_propagate(0)
+        self.FrameCentral.config(cursor='arrow')
+        self.FrameCentral.place(x=0,y=0)
+        
+        self.CreateLabel(self.FrameCentral, "TIC TAC TOE", 50, 200, Font(family="Helvetica",size=15,weight="bold"), 'beige')
+        self.CreateImage(self.FrameCentral, 'tic_128.png', 50, 75, 125, 125)
+        self.nameJugador = tk.Entry(self.FrameCentral, justify=tk.CENTER, width=30)
+        self.CreateButton(self.FrameCentral, 'SALIR', 200, 175, 16, 1, 'BLUE', 'WHITE', self.salirJuego)
+        self.CreateButton(self.FrameCentral, 'JUGAR', 200, 125, 16, 1, 'GREEN', 'WHITE',  self.empiezaJuego)
+        self.CreateLabel(self.FrameCentral, 'Ingresa nombre del jugador', 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
         self.nameJugador.place(x=110, y =50)
+        
                                     
     def salirJuego(self):
         cuadro = messagebox.askyesno(message="¿Desea salir?", title="Fin del juego")
@@ -46,14 +55,23 @@ class MainWindow(tk.Frame):
              text= text,
              font=font, bg=bg).place(x=row, y = col)
         
-    def CreateButton(self, window, text, x, y, w, h, bg, fg, action):
-        tk.Button(window, 
+    def CreateButton(self, window, text, x, y, w, h, bg, fg, action, textvar = None):
+        if textvar is None:
+            tk.Button(window, 
                text=text,
                command=action,
-               width=16,
-               height=1, 
+               width=w,
+               height=h, 
                bg=bg, 
                fg=fg).place(x=x, y=y)
+        else:
+            return tk.Button(window, 
+                   textvariable=textvar,
+                   command=action,
+                   width=w,
+                   height=h, 
+                   bg=bg, 
+                   fg=fg).place(x=x, y=y)
     
     def CreateImage(self, window, path, x, y, width, height):
         img = Image.open(path)
@@ -63,15 +81,66 @@ class MainWindow(tk.Frame):
         panel.image=img
         panel.place(y=y, x=x)
         
+    def VaciarFrame(self, frame):
+        
+        #map(lambda widget: widget.destroy(), frame.winfo_children())
+        for widget in frame.winfo_children():
+            widget.destroy()
+        frame.pack_forget()
+        
+    def EnviarJugadaJugador(self, fil, col):
+        #print(fil, col)
+        tablero_aux = self.tablero.jugadaUsuario(fil, col, self.turno)
+        if tablero_aux is None:
+            messagebox.showinfo(message="Casilla llena", title="Seleccione otra casilla")
+        elif tablero_aux== -1:
+            empate = messagebox.askyesno(message="¿Desea empezar de nuevo?", title="EMPATE!!")
+            if empate: 
+                self.tablero.formateaTablero()
+                self.formateaTableroBotones()
+                self.empiezaJuego()
+        else:
+            self.text_jugada[fil][col].set(self.turno)
+            print("Jugada del computador")
+            
+    def formateaTableroBotones(self):
+        
+        for i in range(0, len(self.text_jugada)):
+            for j in range(0, len(self.text_jugada)):
+                self.text_jugada[i][j].set("")
 
+    def FrameJugeo(self):
+        self.CreateLabel(self.FrameCentral, 'Es el turno de {} con ficha: {}'.format(str(self.name) , self.turno), 120, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
+        self.tablero_botones = [[None, None, None], [None, None, None], [None, None, None]]
+        self.text_jugada = [[None, None, None], [None, None, None], [None, None, None]]
+        
+        for i in range(0, 3):
+            for j in range(0, 3):
+                self.text_jugada[i][j] = tk.StringVar()
+                self.text_jugada[i][j].set('%s, %s ' % (i,j)) 
+                self.tablero_botones[i][j] = self.CreateButton(self.FrameCentral,'', 50 + (j*45), 75 +(i*40),5, 2, 'WHITE', 'BLACK', partial(self.EnviarJugadaJugador, i, j), self.text_jugada[i][j] )
+            
+        
+        
     
     def empiezaJuego(self):
-        if self.nameJugador.get() == '' or self.nameJugador.get() == None:
+        try:
+            self.name = self.nameJugador.get()
+        except: 
+            print('Nombre ya guardado')
+        if self.name.isspace() or self.name == None:
             messagebox.showinfo(message="Ingrese nombre del jugador", title="Jugador")
+            self.nameJugador.config(state=tk.NORMAL)
+            self.nameJugador.delete(0, tk.END)
         else:
-            print("Si existe")
+            self.VaciarFrame(self.FrameCentral)
+            self.turno = "X" if messagebox.askyesno(message="¿Desea empezar primero?", title="Orden de participación") else "O"
+            self.FrameJugeo()
+            
+            
 
 if __name__ == '__main__':
     root = tk.Tk()
     MainWindow(root).pack(side="top", fill="both", expand=True)
     root.mainloop()
+  
