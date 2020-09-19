@@ -122,8 +122,9 @@ class MainWindow(tk.Frame):
                 self.text_jugada[i][j].set('') 
                 self.tablero_botones[i][j] = self.CreateButton(self.FrameCentral,'', 50 + (j*45), 75 +(i*40),5, 2, 'WHITE', 'BLACK', partial(self.EnviarJugadaJugador, i, j), self.text_jugada[i][j] )
         if self.turno == 'O':
-            fil, col, computador = self.tablero.jugadaComputador(self.tablero.cambiarFicha(self.turno))
-            self.text_jugada[fil][col] = computador
+            print('empieza segundo')
+            fil, col, computador = self.tablero.jugadaComputador(self.turno)
+            self.text_jugada[fil][col].set(computador)
         
         
 
