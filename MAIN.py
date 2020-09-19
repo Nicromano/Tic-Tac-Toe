@@ -134,6 +134,8 @@ class MainWindow(tk.Frame):
         self.CreateButton(self.FrameCentral, 'Juego nuevo',200, 100, 16, 1, 'GREEN', 'WHITE', partial(self.empiezaDeNuevo, 'Juego nuevo'))
         self.CreateButton(self.FrameCentral, 'Salir', 200, 150, 16, 1, 'BLUE', 'WHITE', self.principal)
         
+        ## Crear visualización de estadisticas
+        
         for i in range(0, 3):
             for j in range(0, 3):
                 self.text_jugada[i][j] = tk.StringVar()
@@ -157,6 +159,7 @@ class MainWindow(tk.Frame):
             self.nameJugador.delete(0, tk.END)
         else:
             self.VaciarFrame(self.FrameCentral)
+            self.estadisticas = self.tablero.leerEstadisticas(self.name)
             self.turno = "X" if messagebox.askyesno(message="¿Desea empezar primero?", title="Orden de participación") else "O"
             self.FrameJugeo()
             
