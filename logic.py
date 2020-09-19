@@ -47,11 +47,16 @@ class TicTacToe:
         elif self.tableroLLeno():
             return -1 #
         return None
+    def alguienGano(self, turno):
+        pass
     
     def jugadaComputador(self, turno):
         fil = None
         col = None
         computador = "O" if turno == "X" else "X"
+        #antes de bloquear debe saber si la computadora puede ganar 
+        
+        
         #analiza filas y columnas
         
         #intenta bloquear fila
@@ -78,40 +83,30 @@ class TicTacToe:
                     if self.tablero[j][i] == '':
                         self.tablero[j][i] = computador
                         return j, i, computador
-                
-        '''for i in range(0, len(self.tablero)):
-            contadorfilas = 0
-            contadorCol = 0
-            for j in range(0, len(self.tablero)):
-                if self.tablero[j][i] == turno or self.tablero[j][i] != '':
-                    contadorCol += 1
-                        
-                if self.tablero[i][j] == turno or self.tablero[i][j] != '':
-                    contadorfilas += 1
-            if contadorfilas == 2:
-                f = i
-                break
-            if contadorCol == 2:
-                f = i
-                break
-        if contadorfilas == 2:
-            print("Intenta bloquear fila")
-            for y in range(0, len(self.tablero)):
-                if self.tablero[f][y] != turno and self.tablero[f][y] == '':
-                    self.tablero[f][y] = computador
-                    fil = f
-                    col = y
-                    return fil, col, computador
-        if contadorCol == 2:
-            print("Intenta bloquear columna")
-            for x in range(0, len(self.tablero)):
-                    if self.tablero[x][f] != turno and self.tablero[x][f] == '':
-                        self.tablero[x][f] = computador
-                        fil = x
-                        col = f
-                        return fil, col, computador'''
         
-                        
+        #intenta bloquear diagonales 
+        #diagonal principal
+        diagonalp = 0
+        for i in range(0, len(self.tablero)):
+            if self.tablero[i][i] == turno:
+                diagonalp += 1
+        if diagonalp == 2:
+            for i in range(0, len(self.tablero)):
+                if self.tablero[i][i]== '':
+                    self.tablero[i][i] = computador
+                    return i, i, computador
+                    
+        #diagonal secundaria 
+        diagonals = 0
+        for i in range(0, len(self.tablero)):
+            if self.tablero[i][len(self.tablero)-(i+1)] == turno:
+                diagonals +=1
+        if diagonals == 2:
+            for i in range(0, len(self.tablero)):
+                if self.tablero[i][len(self.tablero)-(i+1)] == '':
+                    self.tablero[i][len(self.tablero)-(i+1)] = computador 
+                    return i, len(self.tablero)-(i+1), computador
+        #juega para random
         print("Jugó para random")
         while True:
             fil = randint(0, 2)
@@ -119,7 +114,7 @@ class TicTacToe:
             if not self.casillaOcupada(fil, col):
                 self.tablero[fil][col] = computador 
                 return fil, col, computador
-   
+     
         
                         
        
