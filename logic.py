@@ -35,6 +35,7 @@ class TicTacToe:
             return True
         return False
     
+    ##FUNCIÓN RECURSIVA
     def formateaTablero(self, i= 0, j = 0):
         if j == len(self.tablero):
             j = 0
@@ -43,15 +44,24 @@ class TicTacToe:
             self.tablero[i][j] = ''
         except:
             return
-        print(i, j)
         return self.formateaTablero(i, j+1)
         
+    def actualizarEstadistica(self, jugador, estado):
+        
+        archivo = pd.read_csv('estadisticas.csv', sep=",")
+        try:
+            archivo.loc[archivo['Jugador'] == jugador, estado['Key']] = estado['valor']
+            archivo.to_csv('estadisticas.csv',  index=None)
+        except KeyError:
+            print("error")
+            pass
     
     def leerEstadisticas(self, jugador):
         archivo = pd.read_csv('estadisticas.csv', sep=',')
-        jugadorExiste = len(list(filter(lambda x: x ==jugador, archivo['Jugador'])))
+        jugadorExiste = len(list(filter(lambda x: x == jugador, archivo['Jugador'])))
         if jugadorExiste != 0:
             #si existe 
+            print("exite usuario")
             indice = list(archivo['Jugador']).index(jugador)
             return {
                 'Jugador': archivo['Jugador'][indice], 
@@ -73,7 +83,7 @@ class TicTacToe:
     def jugadaUsuario(self, fil, col, turno):
         if not self.casillaOcupada(fil, col):
             self.tablero[fil][col] = str(turno)
-            print(self.tablero)
+            
             if self.tableroLLeno():
                 return -1
             return self.tablero
@@ -233,7 +243,6 @@ class TicTacToe:
                     return i, len(self.tablero)-(i+1), computador
         #juega para random
       
-        print("Jugó para random")
         while True:
             fil = randint(0, 2)
             col = randint(0, 2)
@@ -243,7 +252,7 @@ class TicTacToe:
      
 if __name__ == '__main__':
     tablero = TicTacToe()
-    print(tablero.leerEstadisticas('Peaspe'))
+    print(len(tablero.leerEstadisticas('Peaspe')))
 
     
         

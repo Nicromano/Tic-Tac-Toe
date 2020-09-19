@@ -97,19 +97,24 @@ class MainWindow(tk.Frame):
         if tablero_aux is None:
             messagebox.showinfo(message="Casilla llena", title="Seleccione otra casilla")
         elif tablero_aux== -1:
+            actualiza = {'Key':'Empate', 'valor': self.estadisticas['Empate']+1}
+            self.tablero.actualizarEstadistica(self.name, actualiza)
             self.empiezaDeNuevo('Empate!!')
         else:
             self.text_jugada[fil][col].set(self.turno)
-            print("Jugada del computador")
             i, j, computador= self.tablero.jugadaComputador(self.turno)
             self.text_jugada[i][j].set(computador)
             if  self.tablero.alguienGano(self.turno):
                 #ganó el usuario
                 messagebox.showinfo(message="Felicidades, has ganado!", title="Ganador")
+                actualiza = {'Key':'Ganadas', 'valor': self.estadisticas['Ganadas']+1}
+                self.tablero.actualizarEstadistica(self.name, actualiza)
                 self.empiezaDeNuevo('Ganador!!')
             if  self.tablero.alguienGano(self.tablero.cambiarFicha(self.turno)):
                 #ganó el computador
                 messagebox.showinfo(message="Has perdido. Intentalo de nuevo", title="Perdida")
+                actualiza = {'Key':'Perdidas', 'valor': self.estadisticas['Perdidas']+1}
+                self.tablero.actualizarEstadistica(self.name, actualiza)
                 self.empiezaDeNuevo('Perdida')
     
     def empiezaDeNuevo(self, titulo):
@@ -126,7 +131,7 @@ class MainWindow(tk.Frame):
         for i in range(0, len(self.text_jugada)):
             for j in range(0, len(self.text_jugada)):
                 self.text_jugada[i][j].set("")
-
+        
     def FrameJugeo(self):
         self.CreateLabel(self.FrameCentral, 'Es el turno de {} con ficha: {}'.format(str(self.name) , self.turno), 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
         self.tablero_botones = [[None, None, None], [None, None, None], [None, None, None]]
@@ -136,13 +141,24 @@ class MainWindow(tk.Frame):
         
         ## Crear visualización de estadisticas
         
+        var = tk.StringVar()
+        self.estadisticas = self.tablero.leerEstadisticas(self.name)
+        variablePrueba = ''
+        var.set('')
+        print(self.estadisticas)
+        for clave, valor in self.estadisticas.items():
+            variablePrueba += "%s: %s    " % (clave, valor)
+        var.set(variablePrueba)
+        l = tk.Label(self.FrameCentral, textvariable=var,justify=tk.LEFT, font= Font(family="Helvetica",size=10,weight="normal"), wraplength=398, bg='beige')
+        l.place(x=40, y= 225)
+        
+        
         for i in range(0, 3):
             for j in range(0, 3):
                 self.text_jugada[i][j] = tk.StringVar()
                 self.text_jugada[i][j].set('') 
                 self.tablero_botones[i][j] = self.CreateButton(self.FrameCentral,'', 50 + (j*45), 75 +(i*40),5, 2, 'WHITE', 'BLACK', partial(self.EnviarJugadaJugador, i, j), self.text_jugada[i][j] )
         if self.turno == 'O':
-            print('empieza segundo')
             fil, col, computador = self.tablero.jugadaComputador(self.turno)
             self.text_jugada[fil][col].set(computador)
         
@@ -159,7 +175,6 @@ class MainWindow(tk.Frame):
             self.nameJugador.delete(0, tk.END)
         else:
             self.VaciarFrame(self.FrameCentral)
-            self.estadisticas = self.tablero.leerEstadisticas(self.name)
             self.turno = "X" if messagebox.askyesno(message="¿Desea empezar primero?", title="Orden de participación") else "O"
             self.FrameJugeo()
             
