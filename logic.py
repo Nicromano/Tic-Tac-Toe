@@ -61,7 +61,6 @@ class TicTacToe:
         jugadorExiste = len(list(filter(lambda x: x == jugador, archivo['Jugador'])))
         if jugadorExiste != 0:
             #si existe 
-            print("exite usuario")
             indice = list(archivo['Jugador']).index(jugador)
             return {
                 'Jugador': archivo['Jugador'][indice], 
@@ -78,8 +77,7 @@ class TicTacToe:
         nuevo.to_csv('estadisticas.csv', index=None, mode="a", header=not os.path.isfile('estadisticas.csv'))
         return nuevoJugador
         
-        
-        
+          
     def jugadaUsuario(self, fil, col, turno):
         if not self.casillaOcupada(fil, col):
             self.tablero[fil][col] = str(turno)
