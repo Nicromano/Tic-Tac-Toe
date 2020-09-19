@@ -102,6 +102,8 @@ class MainWindow(tk.Frame):
         else:
             self.text_jugada[fil][col].set(self.turno)
             print("Jugada del computador")
+            i, j, computador= self.tablero.jugadaComputador(self.turno)
+            self.text_jugada[i][j].set(computador)
             
     def formateaTableroBotones(self):
         
@@ -117,7 +119,7 @@ class MainWindow(tk.Frame):
         for i in range(0, 3):
             for j in range(0, 3):
                 self.text_jugada[i][j] = tk.StringVar()
-                self.text_jugada[i][j].set('%s, %s ' % (i,j)) 
+                self.text_jugada[i][j].set('') 
                 self.tablero_botones[i][j] = self.CreateButton(self.FrameCentral,'', 50 + (j*45), 75 +(i*40),5, 2, 'WHITE', 'BLACK', partial(self.EnviarJugadaJugador, i, j), self.text_jugada[i][j] )
             
         
