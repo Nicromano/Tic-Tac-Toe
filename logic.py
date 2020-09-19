@@ -8,8 +8,8 @@ from random import randint
 
 class TicTacToe:
     def __init__(self):
-        self.tablero = [["X", "O", "X"],["X", "X", "O"],["X", "", ""]]
-        #self.tablero = [["", "", ""],["", "", ""],["", "", ""]]
+        #self.tablero = [["X", "O", "X"],["X", "X", "O"],["X", "", ""]]
+        self.tablero = [["", "", ""],["", "", ""],["", "", ""]]
         
     
     def tableroLLeno(self):
@@ -51,10 +51,13 @@ class TicTacToe:
     
     def alguienGano(self, turno):
         ganador = list(map(lambda x: list(filter(lambda j: j == turno, x)), self.tablero))
-        
         cantidad = list(map(lambda x: len(x), ganador))
-        print(ganador, cantidad)
-        
+        try:
+            cantidad.index(3)
+            return True
+        except:
+            return False
+
     
     def intentaGanarPc(self, computador):
         
@@ -181,9 +184,9 @@ class TicTacToe:
                 self.tablero[fil][col] = computador 
                 return fil, col, computador
      
-if __name__ == '__main__':
+'''if __name__ == '__main__':
     tablero = TicTacToe()
-    tablero.alguienGano("O")
+    tablero.alguienGano("O")'''
         
                         
        

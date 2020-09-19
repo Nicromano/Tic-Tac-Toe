@@ -94,16 +94,32 @@ class MainWindow(tk.Frame):
         if tablero_aux is None:
             messagebox.showinfo(message="Casilla llena", title="Seleccione otra casilla")
         elif tablero_aux== -1:
-            empate = messagebox.askyesno(message="¿Desea empezar de nuevo?", title="EMPATE!!")
+            self.empiezaDeNuevo('Empate!!')
+            '''empate = messagebox.askyesno(message="¿Desea empezar de nuevo?", title="EMPATE!!")
             if empate: 
                 self.tablero.formateaTablero()
                 self.formateaTableroBotones()
-                self.empiezaJuego()
+                self.empiezaJuego()'''
         else:
             self.text_jugada[fil][col].set(self.turno)
             print("Jugada del computador")
             i, j, computador= self.tablero.jugadaComputador(self.turno)
             self.text_jugada[i][j].set(computador)
+            if  self.tablero.alguienGano(self.turno):
+                #ganó el usuario
+                messagebox.showinfo(message="Felicidades, has ganado!", title="Ganador")
+                self.empiezaDeNuevo('Ganador!!')
+            if  self.tablero.alguienGano(self.tablero.cambiarFicha(self.turno)):
+                #ganó el computador
+                messagebox.showinfo(message="Has perdido. Intentalo de nuevo", title="Perdida")
+                self.empiezaDeNuevo('Perdida')
+    
+    def empiezaDeNuevo(self, titulo):
+        empate = messagebox.askyesno(message="¿Desea empezar de nuevo?", title=titulo)
+        if empate: 
+            self.tablero.formateaTablero()
+            self.formateaTableroBotones()
+            self.empiezaJuego()
             
     def formateaTableroBotones(self):
         
