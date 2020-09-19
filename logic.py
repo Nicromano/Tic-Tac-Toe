@@ -2,7 +2,10 @@
 """
 Created on Tue Sep  1 22:33:25 2020
 
-@author: NICROMANO
+Materia: Programaci+on Avazada 'A'
+@author: José León Alarcón
+@author: Emerson Palacios Balderramo
+
 """
 from random import randint
 from functools import reduce
@@ -11,16 +14,15 @@ import os
 
 class TicTacToe:
     def __init__(self):
-        '''self.tablero = [["O", "O", "X"],
-                        ["O", "X", "O"],
-                        ["X", "X", "O"]]'''
         self.tablero = [["", "", ""],
                         ["", "", ""],
                         ["", "", ""]]
         
     
     def tableroLLeno(self):
-        ##FUNCIONES DE ORDEN SUPERIOR
+        ####################################################################################
+        ###################### USO DE FUNCIONES DE ORDEN SUPERIOR  #########################
+        ####################################################################################
         lineasCasillas = map(lambda x: len(x),  list(map(lambda x: list(filter(lambda j: j != '', x)), self.tablero)))
         total = reduce(lambda x,y: x+y,lineasCasillas)
         return True if total == 9 else False
@@ -35,7 +37,9 @@ class TicTacToe:
             return True
         return False
     
-    ##FUNCIÓN RECURSIVA
+    ####################################################################################
+    ###################### IMPLEMENTACIÓN DE FUNCIÓN RECURSIVA #########################
+    ####################################################################################
     def formateaTablero(self, i= 0, j = 0):
         if j == len(self.tablero):
             j = 0
@@ -58,6 +62,9 @@ class TicTacToe:
     
     def leerEstadisticas(self, jugador):
         archivo = pd.read_csv('estadisticas.csv', sep=',')
+        ####################################################################################
+        ###################### USO DE FUNCIONES DE ORDEN SUPERIOR  #########################
+        ####################################################################################
         jugadorExiste = len(list(filter(lambda x: x == jugador, archivo['Jugador'])))
         if jugadorExiste != 0:
             #si existe 
@@ -90,6 +97,9 @@ class TicTacToe:
         return None
     
     def alguienGano(self, turno):
+        ####################################################################################
+        ###################### USO DE FUNCIONES DE ORDEN SUPERIOR  #########################
+        ####################################################################################
         ganador = list(map(lambda x: list(filter(lambda j: j == turno, x)), self.tablero))
         cantidad = list(map(lambda x: len(x), ganador))
         try:
@@ -248,10 +258,6 @@ class TicTacToe:
                 self.tablero[fil][col] = computador 
                 return fil, col, computador
      
-if __name__ == '__main__':
-    tablero = TicTacToe()
-    print(len(tablero.leerEstadisticas('Peaspe')))
-
     
         
                         

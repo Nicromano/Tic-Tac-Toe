@@ -2,7 +2,9 @@
 """
 Created on Tue Sep  1 00:00:19 2020
 
-@author: NICROMANO
+Materia: Programaci+on Avazada 'A'
+@author: José León Alarcón
+@author: Emerson Palacios Balderramo
 """
 import tkinter as tk
 from PIL import ImageTk,Image
@@ -10,6 +12,8 @@ from tkinter import messagebox
 from tkinter.font import Font
 from logic import TicTacToe
 from functools import partial
+import rx
+from rx import operators as op
 
 class MainWindow(tk.Frame):
     def __init__(self, parent, *args,**kwargs):
@@ -33,12 +37,15 @@ class MainWindow(tk.Frame):
         self.FrameCentral.grid_propagate(0)
         self.FrameCentral.config(cursor='arrow')
         self.FrameCentral.place(x=0,y=0)
-        
         self.principal()
         
         
     def principal(self):
-        self.VaciarFrame(self.FrameCentral)
+        ####################################################################################
+        ###################### USO DE OPERADORES DE TRASNFORMACIÓN #########################
+        ####################################################################################
+        self.vaciarFrameReactiveX(self.FrameCentral)
+        self.fuente.subscribe(lambda x: print("objeto eliminado"))
         self.CreateLabel(self.FrameCentral, "TIC TAC TOE", 50, 200, Font(family="Helvetica",size=15,weight="bold"), 'beige')
         self.CreateImage(self.FrameCentral, 'tic_128.png', 50, 75, 125, 125)
         self.nameJugador = tk.Entry(self.FrameCentral, justify=tk.CENTER, width=30)
@@ -50,8 +57,11 @@ class MainWindow(tk.Frame):
     def salirJuego(self):
         cuadro = messagebox.askyesno(message="¿Desea salir?", title="Fin del juego")
         if cuadro:
-            
-            self.VaciarFrame(self.FrameCentral)
+            ####################################################################################
+            ###################### USO DE OPERADORES DE TRASNFORMACIÓN #########################
+            ####################################################################################
+            self.vaciarFrameReactiveX(self.FrameCentral)
+            self.fuente.subscribe(lambda x: print("objeto eliminado"))
             self.parent.quit()
         
     def CreateLabel(self, window, text, row, col, font, bg):
@@ -85,11 +95,17 @@ class MainWindow(tk.Frame):
         panel.image=img
         panel.place(y=y, x=x)
         
-    def VaciarFrame(self, frame):
-
-        for widget in frame.winfo_children():
-            widget.destroy()
+        ####################################################################################
+        ######### Vaciar frame con observadores y operador de transformación ###############
+        ####################################################################################
+    def vaciarFrameReactiveX(self, frame):
+        self.fuente = rx.from_list(frame.winfo_children()).pipe(
+            op.map(self.VaciarFrame))
         frame.pack_forget()
+        
+    def VaciarFrame(self, widget):
+        widget.destroy()
+        
         
     def EnviarJugadaJugador(self, fil, col):
         #print(fil, col)
@@ -145,7 +161,6 @@ class MainWindow(tk.Frame):
         self.estadisticas = self.tablero.leerEstadisticas(self.name)
         variablePrueba = ''
         var.set('')
-        print(self.estadisticas)
         for clave, valor in self.estadisticas.items():
             variablePrueba += "%s: %s    " % (clave, valor)
         var.set(variablePrueba)
@@ -174,7 +189,11 @@ class MainWindow(tk.Frame):
             self.nameJugador.config(state=tk.NORMAL)
             self.nameJugador.delete(0, tk.END)
         else:
-            self.VaciarFrame(self.FrameCentral)
+            ####################################################################################
+            ###################### USO DE OPERADORES DE TRASNFORMACIÓN #########################
+            ####################################################################################
+            self.vaciarFrameReactiveX(self.FrameCentral)
+            self.fuente.subscribe(lambda x: print("objeto eliminado"))
             self.turno = "X" if messagebox.askyesno(message="¿Desea empezar primero?", title="Orden de participación") else "O"
             self.FrameJugeo()
             
