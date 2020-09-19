@@ -48,16 +48,76 @@ class TicTacToe:
             return -1 #
         return None
     def alguienGano(self, turno):
+        
         pass
+    
+    def intentaGanarPc(self, computador):
+        
+        #intenta ganar en fila
+        for i in range(0, len(self.tablero)):
+            fila = 0
+            for j in range(0, len(self.tablero)):
+                if self.tablero[i][j] == computador:
+                    fila += 1
+            if fila == 2:
+                #bloquea la fila 
+                for j in range(0, len(self.tablero)):
+                    if self.tablero[i][j] == '':
+                        self.tablero[i][j] = computador
+                        return i, j, computador
+        
+        #intenta bloquear columnas 
+        for i in range(0, len(self.tablero)):
+            columna = 0
+            for j in range(0, len(self.tablero)):
+                if self.tablero[j][i] == computador:
+                    columna += 1
+            if columna == 2:
+                for j in range(0, len(self.tablero)):
+                    if self.tablero[j][i] == '':
+                        self.tablero[j][i] = computador
+                        return j, i, computador
+        
+        #intenta bloquear diagonales 
+        #diagonal principal
+        diagonalp = 0
+        for i in range(0, len(self.tablero)):
+            if self.tablero[i][i] == computador:
+                diagonalp += 1
+        if diagonalp == 2:
+            for i in range(0, len(self.tablero)):
+                if self.tablero[i][i]== '':
+                    self.tablero[i][i] = computador
+                    return i, i, computador
+                    
+        #diagonal secundaria 
+        diagonals = 0
+        for i in range(0, len(self.tablero)):
+            if self.tablero[i][len(self.tablero)-(i+1)] == computador:
+                diagonals +=1
+        if diagonals == 2:
+            for i in range(0, len(self.tablero)):
+                if self.tablero[i][len(self.tablero)-(i+1)] == '':
+                    self.tablero[i][len(self.tablero)-(i+1)] = computador 
+                    return i, len(self.tablero)-(i+1), computador
+        
+        return None, None, computador
+    
+    ## FUNCIÓN DE PRIMERA CLASE ###
+    def cambiarFicha(self, turno):
+        return "O" if turno == "X" else "X"
     
     def jugadaComputador(self, turno):
         fil = None
         col = None
-        computador = "O" if turno == "X" else "X"
-        #antes de bloquear debe saber si la computadora puede ganar 
+        
+        ficha = self.cambiarFicha
+        computador = ficha(turno)
         
         
-        #analiza filas y columnas
+        fil, col, computador = self.intentaGanarPc(computador)
+        if fil != None and col != None:
+            return fil, col, computador
         
         #intenta bloquear fila
         for i in range(0, len(self.tablero)):
@@ -107,6 +167,7 @@ class TicTacToe:
                     self.tablero[i][len(self.tablero)-(i+1)] = computador 
                     return i, len(self.tablero)-(i+1), computador
         #juega para random
+      
         print("Jugó para random")
         while True:
             fil = randint(0, 2)
