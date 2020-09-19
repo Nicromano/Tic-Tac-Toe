@@ -5,7 +5,6 @@ Created on Tue Sep  1 00:00:19 2020
 @author: NICROMANO
 """
 import tkinter as tk
-from tkinter import ttk
 from PIL import ImageTk,Image
 from tkinter import messagebox
 from tkinter.font import Font
@@ -37,13 +36,6 @@ class MainWindow(tk.Frame):
         
         self.principal()
         
-        '''self.CreateLabel(self.FrameCentral, "TIC TAC TOE", 50, 200, Font(family="Helvetica",size=15,weight="bold"), 'beige')
-        self.CreateImage(self.FrameCentral, 'tic_128.png', 50, 75, 125, 125)
-        self.nameJugador = tk.Entry(self.FrameCentral, justify=tk.CENTER, width=30)
-        self.CreateButton(self.FrameCentral, 'SALIR', 200, 175, 16, 1, 'BLUE', 'WHITE', self.salirJuego)
-        self.CreateButton(self.FrameCentral, 'JUGAR', 200, 125, 16, 1, 'GREEN', 'WHITE',  self.empiezaJuego)
-        self.CreateLabel(self.FrameCentral, 'Ingresa nombre del jugador', 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
-        self.nameJugador.place(x=110, y =50)'''
         
     def principal(self):
         self.VaciarFrame(self.FrameCentral)
@@ -58,8 +50,9 @@ class MainWindow(tk.Frame):
     def salirJuego(self):
         cuadro = messagebox.askyesno(message="¿Desea salir?", title="Fin del juego")
         if cuadro:
-            self.parent.quit
-        return
+            
+            self.VaciarFrame(self.FrameCentral)
+            self.parent.quit()
         
     def CreateLabel(self, window, text, row, col, font, bg):
         tk.Label(window,
@@ -105,11 +98,6 @@ class MainWindow(tk.Frame):
             messagebox.showinfo(message="Casilla llena", title="Seleccione otra casilla")
         elif tablero_aux== -1:
             self.empiezaDeNuevo('Empate!!')
-            '''empate = messagebox.askyesno(message="¿Desea empezar de nuevo?", title="EMPATE!!")
-            if empate: 
-                self.tablero.formateaTablero()
-                self.formateaTableroBotones()
-                self.empiezaJuego()'''
         else:
             self.text_jugada[fil][col].set(self.turno)
             print("Jugada del computador")
@@ -125,11 +113,13 @@ class MainWindow(tk.Frame):
                 self.empiezaDeNuevo('Perdida')
     
     def empiezaDeNuevo(self, titulo):
-        empate = messagebox.askyesno(message="¿Desea empezar de nuevo?", title=titulo)
-        if empate: 
-            self.tablero.formateaTablero()
-            self.formateaTableroBotones()
+        respuesta = messagebox.askyesno(message="¿Desea empezar de nuevo?", title=titulo)
+        self.tablero.formateaTablero()
+        self.formateaTableroBotones()
+        if respuesta: 
             self.empiezaJuego()
+        else:
+            self.principal()
             
     def formateaTableroBotones(self):
         

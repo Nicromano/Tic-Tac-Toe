@@ -9,7 +9,7 @@ from functools import reduce
 
 class TicTacToe:
     def __init__(self):
-        '''self.tablero = [["O", "X", "X"],
+        '''self.tablero = [["O", "O", "X"],
                         ["O", "X", "O"],
                         ["X", "X", "O"]]'''
         self.tablero = [["", "", ""],
@@ -18,8 +18,9 @@ class TicTacToe:
         
     
     def tableroLLeno(self):
-        linasCasillas = map(lambda x: len(x),  list(map(lambda x: list(filter(lambda j: j != '', x)), self.tablero)))
-        total = reduce(lambda x,y: x+y,linasCasillas)
+        ##FUNCIONES DE ORDEN SUPERIOR
+        lineasCasillas = map(lambda x: len(x),  list(map(lambda x: list(filter(lambda j: j != '', x)), self.tablero)))
+        total = reduce(lambda x,y: x+y,lineasCasillas)
         return True if total == 9 else False
     
     def cambiaTurno(self, turnoAnterior):
@@ -32,15 +33,25 @@ class TicTacToe:
             return True
         return False
     
+    def formateaTablero(self, i= 0, j = 0):
+        if j == len(self.tablero):
+            j = 0
+            i +=1
+        try:
+            self.tablero[i][j] = ''
+        except:
+            return
+        print(i, j)
+        return self.formateaTablero(i, j+1)
+        
     
-    def formateaTablero(self):
+    '''def formateaTablero(self):
         for i in range(0, len(self.tablero)):
             for j in range(0, len(self.tablero)):
-                self.tablero[i][j] = ''
+                self.tablero[i][j] = '' '''
         
         
     def jugadaUsuario(self, fil, col, turno):
-
         if not self.casillaOcupada(fil, col):
             self.tablero[fil][col] = str(turno)
             print(self.tablero)
@@ -145,6 +156,7 @@ class TicTacToe:
         fil = None
         col = None
         
+        #uso de función de primera clase
         ficha = self.cambiarFicha
         computador = ficha(turno)
         
@@ -212,7 +224,9 @@ class TicTacToe:
      
 if __name__ == '__main__':
     tablero = TicTacToe()
-    print(tablero.alguienGano('X'))
+    tablero.formateaTablero()
+    print(tablero.tablero)
+    
         
                         
        
