@@ -5,20 +5,22 @@ Created on Tue Sep  1 22:33:25 2020
 @author: NICROMANO
 """
 from random import randint
+from functools import reduce
 
 class TicTacToe:
     def __init__(self):
-        #self.tablero = [["X", "O", "X"],["X", "X", "O"],["X", "", ""]]
-        self.tablero = [["", "", ""],["", "", ""],["", "", ""]]
+        '''self.tablero = [["O", "X", "X"],
+                        ["O", "X", "O"],
+                        ["X", "X", "O"]]'''
+        self.tablero = [["", "", ""],
+                        ["", "", ""],
+                        ["", "", ""]]
         
     
     def tableroLLeno(self):
-        casillasLlenas = 0
-        for i in range(0, len(self.tablero)):
-            for j in range(0, len(self.tablero)):
-                if self.tablero[i][j] != '':
-                    casillasLlenas = casillasLlenas+1
-        return True if casillasLlenas == 9 else False
+        linasCasillas = map(lambda x: len(x),  list(map(lambda x: list(filter(lambda j: j != '', x)), self.tablero)))
+        total = reduce(lambda x,y: x+y,linasCasillas)
+        return True if total == 9 else False
     
     def cambiaTurno(self, turnoAnterior):
         if turnoAnterior == 0: #Jugó el ordenador
@@ -56,8 +58,32 @@ class TicTacToe:
             cantidad.index(3)
             return True
         except:
-            return False
-
+            pass
+        #evalua columnas 
+        for i in range(0, len(self.tablero)):
+            filas = 0
+            for j in range(0, len(self.tablero)):
+                if self.tablero[j][i] == turno:
+                    filas += 1
+            if filas == 3:
+                return True
+        #evalua diagonal principal
+        diagonalp = 0
+        for i in range(0, len(self.tablero)):
+            if self.tablero[i][i] == turno:
+                diagonalp+=1
+        if diagonalp == 3:
+            return True
+        
+        #evalua diagonal secuandaria
+        diagonals = 0
+        for i in range(0, len(self.tablero)):
+            if self.tablero[i][len(self.tablero)-(i+1)] == turno:
+                diagonals +=1
+        if diagonals == 3:
+            return True
+        return False
+            
     
     def intentaGanarPc(self, computador):
         
@@ -184,9 +210,9 @@ class TicTacToe:
                 self.tablero[fil][col] = computador 
                 return fil, col, computador
      
-'''if __name__ == '__main__':
+if __name__ == '__main__':
     tablero = TicTacToe()
-    tablero.alguienGano("O")'''
+    print(tablero.alguienGano('X'))
         
                         
        

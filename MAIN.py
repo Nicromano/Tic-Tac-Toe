@@ -35,6 +35,18 @@ class MainWindow(tk.Frame):
         self.FrameCentral.config(cursor='arrow')
         self.FrameCentral.place(x=0,y=0)
         
+        self.principal()
+        
+        '''self.CreateLabel(self.FrameCentral, "TIC TAC TOE", 50, 200, Font(family="Helvetica",size=15,weight="bold"), 'beige')
+        self.CreateImage(self.FrameCentral, 'tic_128.png', 50, 75, 125, 125)
+        self.nameJugador = tk.Entry(self.FrameCentral, justify=tk.CENTER, width=30)
+        self.CreateButton(self.FrameCentral, 'SALIR', 200, 175, 16, 1, 'BLUE', 'WHITE', self.salirJuego)
+        self.CreateButton(self.FrameCentral, 'JUGAR', 200, 125, 16, 1, 'GREEN', 'WHITE',  self.empiezaJuego)
+        self.CreateLabel(self.FrameCentral, 'Ingresa nombre del jugador', 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
+        self.nameJugador.place(x=110, y =50)'''
+        
+    def principal(self):
+        self.VaciarFrame(self.FrameCentral)
         self.CreateLabel(self.FrameCentral, "TIC TAC TOE", 50, 200, Font(family="Helvetica",size=15,weight="bold"), 'beige')
         self.CreateImage(self.FrameCentral, 'tic_128.png', 50, 75, 125, 125)
         self.nameJugador = tk.Entry(self.FrameCentral, justify=tk.CENTER, width=30)
@@ -42,8 +54,7 @@ class MainWindow(tk.Frame):
         self.CreateButton(self.FrameCentral, 'JUGAR', 200, 125, 16, 1, 'GREEN', 'WHITE',  self.empiezaJuego)
         self.CreateLabel(self.FrameCentral, 'Ingresa nombre del jugador', 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
         self.nameJugador.place(x=110, y =50)
-        
-                                    
+                                
     def salirJuego(self):
         cuadro = messagebox.askyesno(message="¿Desea salir?", title="Fin del juego")
         if cuadro:
@@ -82,8 +93,7 @@ class MainWindow(tk.Frame):
         panel.place(y=y, x=x)
         
     def VaciarFrame(self, frame):
-        
-        #map(lambda widget: widget.destroy(), frame.winfo_children())
+
         for widget in frame.winfo_children():
             widget.destroy()
         frame.pack_forget()
@@ -128,9 +138,11 @@ class MainWindow(tk.Frame):
                 self.text_jugada[i][j].set("")
 
     def FrameJugeo(self):
-        self.CreateLabel(self.FrameCentral, 'Es el turno de {} con ficha: {}'.format(str(self.name) , self.turno), 120, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
+        self.CreateLabel(self.FrameCentral, 'Es el turno de {} con ficha: {}'.format(str(self.name) , self.turno), 100, 10, Font(family="Helvetica",size=12,weight="bold"), 'beige')
         self.tablero_botones = [[None, None, None], [None, None, None], [None, None, None]]
         self.text_jugada = [[None, None, None], [None, None, None], [None, None, None]]
+        self.CreateButton(self.FrameCentral, 'Juego nuevo',200, 100, 16, 1, 'GREEN', 'WHITE', partial(self.empiezaDeNuevo, 'Juego nuevo'))
+        self.CreateButton(self.FrameCentral, 'Salir', 200, 150, 16, 1, 'BLUE', 'WHITE', self.principal)
         
         for i in range(0, 3):
             for j in range(0, 3):
