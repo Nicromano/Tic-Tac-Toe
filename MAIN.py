@@ -150,8 +150,8 @@ class MainWindow(tk.Frame):
         try:
             self.name = self.nameJugador.get()
         except: 
-            print('Nombre ya guardado')
-        if self.name.isspace() or self.name == None:
+            pass
+        if self.name.isspace() or self.name == '':
             messagebox.showinfo(message="Ingrese nombre del jugador", title="Jugador")
             self.nameJugador.config(state=tk.NORMAL)
             self.nameJugador.delete(0, tk.END)

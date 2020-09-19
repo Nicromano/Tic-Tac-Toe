@@ -6,6 +6,8 @@ Created on Tue Sep  1 22:33:25 2020
 """
 from random import randint
 from functools import reduce
+import pandas as pd 
+import os 
 
 class TicTacToe:
     def __init__(self):
@@ -45,10 +47,27 @@ class TicTacToe:
         return self.formateaTablero(i, j+1)
         
     
-    '''def formateaTablero(self):
-        for i in range(0, len(self.tablero)):
-            for j in range(0, len(self.tablero)):
-                self.tablero[i][j] = '' '''
+    def leerEstadisticas(self, jugador):
+        archivo = pd.read_csv('estadisticas.csv', sep=',')
+        jugadorExiste = len(list(filter(lambda x: x ==jugador, archivo['Jugador'])))
+        if jugadorExiste != 0:
+            #si existe 
+            indice = list(archivo['Jugador']).index(jugador)
+            return {
+                'Jugador': archivo['Jugador'][indice], 
+                'Ganadas': archivo['Ganadas'][indice], 
+                'Perdidas': archivo['Perdidas'][indice], 
+                'Empate': archivo['Empate'][indice]}
+        nuevoJugador = {
+            'Jugador': jugador,
+            'Ganadas': 0,
+            'Perdidas': 0, 
+            'Empate': 0}
+        nuevo = pd.DataFrame(columns=['Jugador', 'Ganadas', 'Perdidas', 'Empate'])
+        nuevo = nuevo.append(nuevoJugador, ignore_index=True )
+        nuevo.to_csv('estadisticas.csv', index=None, mode="a", header=not os.path.isfile('estadisticas.csv'))
+        return nuevoJugador
+        
         
         
     def jugadaUsuario(self, fil, col, turno):
@@ -224,8 +243,8 @@ class TicTacToe:
      
 if __name__ == '__main__':
     tablero = TicTacToe()
-    tablero.formateaTablero()
-    print(tablero.tablero)
+    print(tablero.leerEstadisticas('Peaspe'))
+
     
         
                         
